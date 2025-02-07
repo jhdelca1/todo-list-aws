@@ -16,18 +16,6 @@ Parameters:
       - production
     Description: Enter staging or production. Default is default  
 
-CreateDynamoTable:
-    Type: String
-    Default: "true"
-    AllowedValues:
-      - "true"
-      - "false"
-    Description: "Crear la tabla DynamoDB si no existe"
-
-# Conditions
-Conditions:
-  CreateTableCondition: !Equals [!Ref CreateDynamoTable, "true"]
-
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -103,12 +91,11 @@ Resources:
           Type: Api
           Properties:
             Path: /todos/{id}
-            Method: delete
-            
+            Method: delete            
   TodosDynamoDbTable:
     Type: AWS::DynamoDB::Table
-    Condition: CreateTableCondition  # Solo se creará si CreateDynamoTable es "true"
-    Properties: 
+     Condition: CreateTableCondition  # Solo se creará si CreateDynamoTable es "true"
+	Properties: 
       TableName: !Sub "${Stage}-TodosDynamoDbTable"
       AttributeDefinitions: 
         - AttributeName: id
@@ -143,4 +130,3 @@ Outputs:
   DeleteTodoApi:
     Description: "API Gateway endpoint URL for ${opt:stage} stage for Delete TODO"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/todos/{id}"
-

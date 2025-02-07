@@ -91,11 +91,11 @@ Resources:
           Type: Api
           Properties:
             Path: /todos/{id}
-            Method: delete            
+            Method: delete
+            
   TodosDynamoDbTable:
     Type: AWS::DynamoDB::Table
-     Condition: CreateTableCondition  # Solo se creará si CreateDynamoTable es "true"
-	Properties: 
+    Properties: 
       TableName: !Sub "${Stage}-TodosDynamoDbTable"
       AttributeDefinitions: 
         - AttributeName: id
@@ -130,3 +130,4 @@ Outputs:
   DeleteTodoApi:
     Description: "API Gateway endpoint URL for ${opt:stage} stage for Delete TODO"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/todos/{id}"
+

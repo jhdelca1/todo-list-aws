@@ -2,7 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   todo-list-aws
-
   Application TODO-LIST with SAM format
 
 # Parameters
@@ -24,7 +23,10 @@ Globals:
       Variables:
         DYNAMODB_TABLE: !Ref TodosDynamoDbTable
         ENDPOINT_OVERRIDE: ""
-    
+    Policies:
+      - AWSLambdaDynamoDBPolicy:
+          TableName: !Ref TodosDynamoDbTable
+
 Resources:
   
   CreateTodoFunction:
@@ -34,12 +36,16 @@ Resources:
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
       Handler: create.create
       Runtime: python3.10
+      Policies:
+        - AWSLambdaDynamoDBPolicy:
+            TableName: !Ref TodosDynamoDbTable
       Events:
         Create:
           Type: Api
           Properties:
             Path: /todos
             Method: post
+
   ListTodosFunction:
     Type: AWS::Serverless::Function 
     Properties:
@@ -47,12 +53,16 @@ Resources:
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
       Handler: list.list
       Runtime: python3.10
+      Policies:
+        - AWSLambdaDynamoDBPolicy:
+            TableName: !Ref TodosDynamoDbTable
       Events:
         Create:
           Type: Api
           Properties:
             Path: /todos
             Method: get
+
   GetTodoFunction:
     Type: AWS::Serverless::Function 
     Properties:
@@ -60,12 +70,16 @@ Resources:
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
       Handler: get.get
       Runtime: python3.10
+      Policies:
+        - AWSLambdaDynamoDBPolicy:
+            TableName: !Ref TodosDynamoDbTable
       Events:
         Create:
           Type: Api
           Properties:
             Path: /todos/{id}
             Method: get
+
   UpdateTodoFunction:
     Type: AWS::Serverless::Function 
     Properties:
@@ -73,12 +87,16 @@ Resources:
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
       Handler: update.update
       Runtime: python3.10
+      Policies:
+        - AWSLambdaDynamoDBPolicy:
+            TableName: !Ref TodosDynamoDbTable
       Events:
         Create:
           Type: Api
           Properties:
             Path: /todos/{id}
             Method: put
+
   DeleteTodoFunction:
     Type: AWS::Serverless::Function 
     Properties:
@@ -86,6 +104,9 @@ Resources:
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
       Handler: delete.delete
       Runtime: python3.10
+      Policies:
+        - AWSLambdaDynamoDBPolicy:
+            TableName: !Ref TodosDynamoDbTable
       Events:
         Create:
           Type: Api
@@ -107,11 +128,7 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
 
-
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   BaseUrlApi:
     Description: "Base URL of API"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
@@ -130,4 +147,3 @@ Outputs:
   DeleteTodoApi:
     Description: "API Gateway endpoint URL for ${opt:stage} stage for Delete TODO"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/todos/{id}"
-

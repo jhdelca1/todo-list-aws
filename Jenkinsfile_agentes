@@ -9,6 +9,9 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/jhdelca1/todo-list-aws.git'
                 echo "El workspace actual es: ${env.WORKSPACE}"
                 stash name:'code', includes:'**'
+                sh 'whoami'
+                sh 'hostname'
+                echo "El workspace actual es: ${env.WORKSPACE}"
             }
         }
         stage('Deploy') {
@@ -44,6 +47,9 @@ pipeline {
                             --no-confirm-changeset --no-fail-on-empty-changeset
                     '''
                     echo "Despliegue completado exitosamente."
+                    sh 'whoami'
+                    sh 'hostname'
+                    echo "El workspace actual es: ${env.WORKSPACE}"
                 }
             }
         }    
@@ -95,6 +101,9 @@ pipeline {
                         echo "Procesando resultados de pruebas..."
                         junit 'result-integration.xml'
                     }
+                    sh 'whoami'
+                    sh 'hostname'
+                    echo "El workspace actual es: ${env.WORKSPACE}"
                 }
             }
         }

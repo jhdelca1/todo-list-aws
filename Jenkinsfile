@@ -4,8 +4,7 @@ pipeline {
     stages {
         stage('Get Code') {
             steps {
-                // Borra todo lo que haya en el workspace, incluyendo .git
-                //deleteDir()
+                
                 git branch: 'main', url: 'https://github.com/jhdelca1/todo-list-aws.git'
                 echo "El workspace actual es: ${env.WORKSPACE}"
             }
